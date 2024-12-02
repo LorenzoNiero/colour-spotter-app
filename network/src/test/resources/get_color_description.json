@@ -1,0 +1,84 @@
+{
+  "hex": {
+    "value": "#24B1E0",
+    "clean": "24B1E0"
+  },
+  "rgb": {
+    "fraction": {
+      "r": 0.141176470588235,
+      "g": 0.694117647058824,
+      "b": 0.87843137254902
+    },
+    "r": 36,
+    "g": 177,
+    "b": 224,
+    "value": "rgb(36, 177, 224)"
+  },
+  "hsl": {
+    "fraction": {
+      "h": 0.541666666666667,
+      "s": 0.752,
+      "l": 0.509803921568627
+    },
+    "h": 195,
+    "s": 75,
+    "l": 51,
+    "value": "hsl(195, 75%, 51%)"
+  },
+  "hsv": {
+    "fraction": {
+      "h": 0.541666666666667,
+      "s": 0.839285714285714,
+      "v": 0.87843137254902
+    },
+    "value": "hsv(195, 84%, 88%)",
+    "h": 195,
+    "s": 84,
+    "v": 88
+  },
+  "name": {
+    "value": "Cerulean",
+    "closest_named_hex": "#1DACD6",
+    "exact_match_name": false,
+    "distance": 356
+  },
+  "cmyk": {
+    "fraction": {
+      "c": 0.839285714285714,
+      "m": 0.209821428571429,
+      "y": 0,
+      "k": 0.12156862745098
+    },
+    "value": "cmyk(84, 21, 0, 12)",
+    "c": 84,
+    "m": 21,
+    "y": 0,
+    "k": 12
+  },
+  "XYZ": {
+    "fraction": {
+      "X": 0.464994509803922,
+      "Y": 0.589869803921569,
+      "Z": 0.920412549019608
+    },
+    "value": "XYZ(46, 59, 92)",
+    "X": 46,
+    "Y": 59,
+    "Z": 92
+  },
+  "image": {
+    "bare": "https://www.thecolorapi.com/id?format=svg&named=false&hex=24B1E0",
+    "named": "https://www.thecolorapi.com/id?format=svg&hex=24B1E0"
+  },
+  "contrast": {
+    "value": "#000000"
+  },
+  "_links": {
+    "self": {
+      "href": "/id?hex=24B1E0"
+    }
+  },
+  "_embedded": {
+
+  }
+}

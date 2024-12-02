@@ -21,4 +21,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "Colour Spotter"
 include(":app")
- 
+include(":common")
+//include(":feature:list")
+include(":ui")
+include(":network")
+include(":database")
+include(":domain")
+include(":data")
+include(":feature:spotted")
