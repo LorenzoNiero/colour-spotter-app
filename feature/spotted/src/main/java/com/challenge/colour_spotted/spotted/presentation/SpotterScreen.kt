@@ -6,6 +6,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.dimensionResource
@@ -103,21 +107,19 @@ private fun SpotterContent(
                     processFrame(hexColor)
                 }
 
-                // Overlay with hole
-//                Canvas(
-//                    modifier = Modifier.fillMaxSize(),
-//                    onDraw = {
-//                        drawRect(
-//                            color = Color.Black.copy(alpha = 0.5f)
-//                        )
-//                        drawCircle(
-//                            color = Color.Black,
-//                            radius = size.minDimension / 4,
-//                            center = center,
-//                            blendMode = BlendMode.Exclusion
-//                        )
-//                    }
-//                )
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    // Draw your overlay here
+                    drawRect(
+                        color = Color.Black.copy(alpha = 0.5f), // Semi-transparent black overlay
+                        size = size // Fill the entire canvas
+                    )
+                    drawCircle(
+                        color = Color.Transparent, // Transparent circle to create a hole
+                        radius = size.minDimension / 8, // Adjust radius as needed
+                        center = Offset(size.width / 2, size.height / 2), // Center of the canvas
+                        blendMode = BlendMode.Clear // Use Clear blend mode to create a hole
+                    )
+                }
 
                 Column(
                     Modifier
