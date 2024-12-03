@@ -45,4 +45,12 @@ dependencies {
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation (libs.androidx.camera.core)
+    implementation (libs.androidx.camera.view)
+    implementation (libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.palette.ktx)
+
+    //permission
+    implementation (libs.accompanist.permissions)
 }

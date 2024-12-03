@@ -5,8 +5,9 @@
     <dimen name="padding_list_horizontal">8dp</dimen>
     <dimen name="padding_list_vertical">8dp</dimen>
 
-    <dimen name="xsmall">4dp</dimen>
     <dimen name="card_surface_rounded_corner">8dp</dimen>
+    <dimen name="xsmall">4dp</dimen>
+    <dimen name="small">8dp</dimen>
     <dimen name="normal">12dp</dimen>
     <dimen name="medium">16dp</dimen>
     <dimen name="large">24dp</dimen>
