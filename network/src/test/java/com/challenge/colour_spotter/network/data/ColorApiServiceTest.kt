@@ -15,6 +15,7 @@ import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
+import kotlin.test.assertFailsWith
 
 class ColorApiServiceTest {
 
@@ -69,9 +70,8 @@ class ColorApiServiceTest {
     }
 
     @Test
-    fun `should fetch svg exception json encoding`() = runBlocking {
+    fun `should throw a JsonEncodingException when fetching an SVG file o another format different than JSON`() : Unit = runBlocking {
         // given
-        val configurationResponseModel = ApiMock.colorNetwork
         val asset = JvmUnitTestFakeAssetManager
         val mockResponse = MockResponse()
             .setResponseCode(200)
@@ -79,12 +79,9 @@ class ColorApiServiceTest {
 
         // when
         mockWebServer.enqueue(mockResponse)
-        val exception = assertThrows<JsonEncodingException::class.java> {
-            api.getColorDescription("24B1E0")
+        // assert
+        assertFailsWith<JsonEncodingException> {
+            api.getColorDescription("#FFAAFF")
         }
-
-        // then
-        // Assert additional properties of the exception if needed
-        assertEquals(JsonEncodingException, exception)
     }
 }

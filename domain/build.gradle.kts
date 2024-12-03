@@ -35,6 +35,6 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation (libs.mockk)
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.10")
+    testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 }
