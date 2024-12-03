@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterActionUiState
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterResultUiState
-import com.challenge.colour_spotter.domain.usecase.GetColourInformationByHex
+import com.challenge.colour_spotter.common.addHashIfNeeded
+import com.challenge.colour_spotter.domain.usecase.GetColourInformationByHexUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SpotterViewModel @Inject constructor(
-    private val getColourInformationByHex : GetColourInformationByHex
+    private val getColourInformationByHexUseCase : GetColourInformationByHexUseCase
 ) : ViewModel() {
 
     private val _resultUiState : MutableStateFlow<SpotterResultUiState> = MutableStateFlow(SpotterResultUiState.Idle)
@@ -38,29 +39,31 @@ class SpotterViewModel @Inject constructor(
     private suspend fun fetchColorDescription(hexColor : String) {
         _resultUiState.value = SpotterResultUiState.Loading
         withContext(Dispatchers.IO) {
-            getColourInformationByHex(hexColor).onSuccess {
+            getColourInformationByHexUseCase(hexColor).onSuccess {
                 _resultUiState.value = SpotterResultUiState.Result(it)
             }.onFailure {
-                _resultUiState.value = SpotterResultUiState.Error(it.localizedMessage)
+                _resultUiState.value = SpotterResultUiState.Error(
+                    it.localizedMessage,
+                    onRetry = { performAction() }
+                )
             }
         }
     }
 
-    fun updateText(newText: String) {
+    private fun updateText(newText: String) {
         val actionState = _actionUIResult.value
         if ( actionState is SpotterActionUiState.Action) {
             _actionUIResult.value = actionState.copy (text = newText)
         }
     }
 
-    fun performAction() {
+    private fun performAction() {
         viewModelScope.launch {
             val actionState = _actionUIResult.value
             if ( actionState is SpotterActionUiState.Action) {
-                fetchColorDescription(actionState.text)
+                fetchColorDescription(actionState.text.trim().addHashIfNeeded())
             }
         }
     }
-
 }
 

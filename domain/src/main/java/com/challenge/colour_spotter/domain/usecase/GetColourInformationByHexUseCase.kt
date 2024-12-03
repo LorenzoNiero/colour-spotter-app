@@ -4,7 +4,7 @@ import com.challenge.colour_spotter.common.domain.model.ColorModel
 import com.challenge.colour_spotter.domain.repository.ColorRepository
 import javax.inject.Inject
 
-class GetColourInformationByHex @Inject constructor(
+class GetColourInformationByHexUseCase @Inject constructor(
     private val repository: ColorRepository
 ) {
 

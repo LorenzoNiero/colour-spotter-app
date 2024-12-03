@@ -6,7 +6,8 @@ sealed class SpotterResultUiState {
     data object Loading : SpotterResultUiState()
 
     data class Error(
-        val message: String?
+        val message: String?,
+        val onRetry: () -> Unit
     ) : SpotterResultUiState()
 
     data object Idle : SpotterResultUiState()

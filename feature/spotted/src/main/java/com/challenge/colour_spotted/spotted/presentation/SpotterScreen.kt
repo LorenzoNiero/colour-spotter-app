@@ -86,14 +86,16 @@ private fun SpotterContent(
                     .padding(vertical = dimensionResource(R_UI.dimen.normal))
                     .padding(horizontal = dimensionResource(R_UI.dimen.large))
             ) {
-                when (val state = resultUiState) {
+                when (resultUiState) {
                     is SpotterResultUiState.Error -> {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = state.message ?: stringResource(R.string.error_unknown))
+                            Text(
+                                text = resultUiState.message
+                                    ?: stringResource(R.string.error_unknown))
                             ButtonRetry() {
-
+                                resultUiState.onRetry()
                             }
                         }
                     }
@@ -108,7 +110,7 @@ private fun SpotterContent(
 
                     is SpotterResultUiState.Result -> {
                         ColorCell(
-                            color = state.color,
+                            color = resultUiState.color,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -121,25 +123,25 @@ private fun SpotterContent(
                     .padding(bottom = dimensionResource(R_UI.dimen.small))
                     .padding(horizontal = dimensionResource(R_UI.dimen.normal))
             ){
-                when (val state = actionUiState) {
+                when (actionUiState) {
                     is SpotterActionUiState.Action -> {
                         Row(
                             modifier = Modifier.padding(dimensionResource(R_UI.dimen.small)),
                             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R_UI.dimen.small))
                         ) {
                             TextField(
-                                value = state.text,
-                                onValueChange = { state.onUpdate(it) },
+                                value = actionUiState.text,
+                                onValueChange = { actionUiState.onUpdate(it) },
                                 enabled = resultUiState !is SpotterResultUiState.Loading,
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                                 keyboardActions = KeyboardActions(
-                                    onDone = {  state.onClickAction() }
+                                    onDone = { actionUiState.onClickAction() }
                                 ),
                             )
                             Button(
-                                onClick = { state.onClickAction() },
+                                onClick = { actionUiState.onClickAction() },
                                 enabled = resultUiState !is SpotterResultUiState.Loading
                             ) {
                                 Text(stringResource(R.string.search_button))
@@ -345,7 +347,7 @@ private fun Preview_SpotterScreen_Idle() {
 private fun Preview_SpotterScreen_Error() {
     ColourSpotterTheme {
         SpotterContent(
-            resultUiState = SpotterResultUiState.Error("Message error"),
+            resultUiState = SpotterResultUiState.Error("Message error", {}),
             actionUiState = SpotterActionUiState.Action(
                 text = "",
                 onUpdate = {},
