@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.challenge.colour_spotted.spotted"
+    namespace = "com.challenge.colour_spotter.camera"
     flavorDimensions += "environment"
     productFlavors {
         create("dev") {
@@ -22,25 +22,31 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get()
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get().toString()
     }
+
 }
 
 dependencies {
+    implementation(libs.hilt.android)
     implementation(project(":common"))
     implementation(project(":ui"))
-    implementation(project(":domain"))
-    implementation(project(":camera"))
+
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.compose)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
     debugImplementation(libs.ui.tooling)
 
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
-    implementation(libs.hilt.compose)
+    implementation(libs.kotlinx.coroutines.android)
 
-    testImplementation(libs.junit)
-    testImplementation (libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
+    implementation (libs.androidx.camera.core)
+    implementation (libs.androidx.camera.view)
+    implementation(libs.androidx.camera.camera2)
+    implementation (libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.palette.ktx)
+
+    //permission
+    implementation (libs.accompanist.permissions)
 }

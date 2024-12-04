@@ -1,12 +1,6 @@
 package com.challenge.colour_spotted.spotted.presentation
 
-import android.content.Context
 import android.content.res.Configuration
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,39 +22,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.challenge.colour_spotted.spotted.R
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterActionUiState
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterResultUiState
+import com.challenge.colour_spotter.camera.CameraPreview
+import com.challenge.colour_spotter.camera.RequiresCameraPermission
 import com.challenge.colour_spotter.common.domain.model.ColorModel
 import com.challenge.colour_spotter.ui.component.ColorCell
 import com.challenge.colour_spotter.ui.component.TopBar
 import com.challenge.colour_spotter.ui.theme.ColourSpotterTheme
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
-import kotlinx.coroutines.launch
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import com.challenge.colour_spotter.ui.R as R_UI
 
 @Composable
@@ -134,6 +114,7 @@ private fun SpotterContent(
                         .padding(vertical = dimensionResource(R_UI.dimen.normal))
                         .padding(horizontal = dimensionResource(R_UI.dimen.large))
                 ) {
+
                     when (resultUiState) {
                         is SpotterResultUiState.Error -> {
                             Column(
@@ -227,142 +208,6 @@ fun ButtonRetry(onClick: () -> Unit) {
     }
 
 }
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun RequiresCameraPermission(
-    content: @Composable () -> Unit
-) {
-    if (LocalInspectionMode.current) {
-        content()
-    }
-    else {
-        val cameraPermissionState = rememberPermissionState(
-            android.Manifest.permission.CAMERA
-        )
-
-        if (cameraPermissionState.status.isGranted) {
-            content()
-        } else {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-            ) {
-                val textToShow = if (cameraPermissionState.status.shouldShowRationale) {
-                    // If the user has denied the permission but the rationale can be shown,
-                    // then gently explain why the app requires this permission
-                    stringResource(R.string.permission_camera_important_message)
-                } else {
-                    // If it's the first time the user lands on this feature, or the user
-                    // doesn't want to be asked again for this permission, explain that the
-                    // permission is required
-                    stringResource(R.string.permission_camera_message)
-                }
-                Text(textToShow)
-                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                    Text(stringResource(R.string.request_permission))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun CameraPreview(onFrameCaptured: (String) -> Unit) {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val previewView = remember { PreviewView(context) }
-    val previewUseCase = remember {
-        Preview.Builder().build().also {
-            it.surfaceProvider = previewView.surfaceProvider
-        }
-    }
-
-    val cameraSelector = remember {
-        CameraSelector.Builder()
-            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-            .build()
-    }
-
-    val cameraExecutor = remember {
-        Executors.newSingleThreadExecutor()
-    }
-
-    val colorAnalyser = remember {
-        ColorQuantizerAnalyzer{ hexColor ->
-            onFrameCaptured(hexColor)
-        }
-    }
-
-    val imageAnalysis = remember {
-        ImageAnalysis.Builder()
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_BLOCK_PRODUCER)
-            .build()
-            .also { it.setAnalyzer(cameraExecutor, colorAnalyser) }
-    }
-
-    val coroutineScope = rememberCoroutineScope()
-
-    AndroidView(
-        factory = {
-            coroutineScope.launch {
-                val cameraProvider = context.getCameraProvider()
-
-                runCatching {
-                    cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        previewUseCase,
-                        imageAnalysis
-                    )
-                }
-            }
-            previewView
-        }
-    )
-
-//    AndroidView({ previewView }) { view ->
-//        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-//        cameraProviderFuture.addListener({
-//            val cameraProvider = cameraProviderFuture.get()
-//
-//            val preview = Preview.Builder().build()
-//                .also {
-//                    it.surfaceProvider = view.surfaceProvider
-//            }
-//
-//            val imageAnalyzer = ImageAnalysis.Builder()
-////                .setMaxResolution(Size(1280, 720))
-//                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-//                .build()
-//                .also {
-//                    it.setAnalyzer(ContextCompat.getMainExecutor(context), colorAnalyser)
-//                }
-//
-//            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-//            cameraProvider.unbindAll()
-//            cameraProvider.bindToLifecycle(
-//                lifecycleOwner,
-//                cameraSelector,
-//                preview,
-//                imageAnalyzer
-//            )
-//        }, ContextCompat.getMainExecutor(context))
-//    }
-}
-
-private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
-    suspendCoroutine { continuation ->
-        ProcessCameraProvider.getInstance(this).also { future ->
-            future.addListener({
-                continuation.resume(future.get())
-            }, executor)
-        }
-    }
-
-private val Context.executor: Executor
-    get() = ContextCompat.getMainExecutor(this)
 
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable

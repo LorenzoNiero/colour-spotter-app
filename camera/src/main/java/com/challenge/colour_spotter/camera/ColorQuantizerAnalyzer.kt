@@ -1,4 +1,4 @@
-package com.challenge.colour_spotted.spotted.presentation
+package com.challenge.colour_spotter.camera
 
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -9,7 +9,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-
 class ColorQuantizerAnalyzer(
     private val onColorDetected: (String) -> Unit
 ) : ImageAnalysis.Analyzer {
@@ -19,7 +18,9 @@ class ColorQuantizerAnalyzer(
     override fun analyze(image: ImageProxy) {
 
         val currentTimestamp = System.currentTimeMillis()
-        if (currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(SCAN_DELAY_MILLIS)) {
+        if (currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(
+                SCAN_DELAY_MILLIS
+            )) {
             val bitmap = image.toBitmap() ?: return
 
             val croppedBitmap = getCentralCrop(bitmap)
@@ -36,9 +37,10 @@ class ColorQuantizerAnalyzer(
     }
 
 
-    private fun getCentralCrop(bitmap: Bitmap ): Bitmap {
+    private fun getCentralCrop(bitmap: Bitmap): Bitmap {
         val cropSize = minOf(
-            abs(bitmap.width), abs(bitmap.height))
+            abs(bitmap.width), abs(bitmap.height)
+        ) / 8
         val x = max(0, (bitmap.width - cropSize) / 2)
         val y = max(0, (bitmap.height - cropSize) / 2)
 
@@ -48,7 +50,6 @@ class ColorQuantizerAnalyzer(
         return Bitmap.createBitmap(bitmap, x, y, width, height)
     }
 
-    // Metodo per ottenere il colore predominante
     private fun getDominantColor(bitmap: Bitmap): Int {
         val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 50, 50, false)
         val pixelCount = IntArray(scaledBitmap.width * scaledBitmap.height)
