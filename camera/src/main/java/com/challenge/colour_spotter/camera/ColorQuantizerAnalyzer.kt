@@ -21,7 +21,7 @@ class ColorQuantizerAnalyzer(
         if (currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(
                 SCAN_DELAY_MILLIS
             )) {
-            val bitmap = image.toBitmap() ?: return
+            val bitmap = image.toBitmap()
 
             val croppedBitmap = getCentralCrop(bitmap)
 
