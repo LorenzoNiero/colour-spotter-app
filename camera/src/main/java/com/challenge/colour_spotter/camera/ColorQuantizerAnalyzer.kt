@@ -2,6 +2,7 @@ package com.challenge.colour_spotter.camera
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import java.util.concurrent.TimeUnit
