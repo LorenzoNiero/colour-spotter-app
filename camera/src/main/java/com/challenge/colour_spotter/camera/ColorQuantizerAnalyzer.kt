@@ -16,7 +16,6 @@ class ColorQuantizerAnalyzer(
 
     private var lastAnalyzedTimeStamp = 0L
 
-    @OptIn(ExperimentalGetImage::class)
     override fun analyze(image: ImageProxy) {
 
         val currentTimestamp = System.currentTimeMillis()
