@@ -1,7 +1,6 @@
 package com.challenge.colour_spotted.spotted.presentation
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -35,8 +31,7 @@ import androidx.navigation.NavHostController
 import com.challenge.colour_spotted.spotted.R
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterActionUiState
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterResultUiState
-import com.challenge.colour_spotter.camera.CameraPreview
-import com.challenge.colour_spotter.camera.RequiresCameraPermission
+import com.challenge.colour_spotter.camera.ColorQuantizerPreview
 import com.challenge.colour_spotter.common.domain.model.ColorModel
 import com.challenge.colour_spotter.ui.component.ColorCell
 import com.challenge.colour_spotter.ui.component.TopBar
@@ -44,7 +39,7 @@ import com.challenge.colour_spotter.ui.theme.ColourSpotterTheme
 import com.challenge.colour_spotter.ui.R as R_UI
 
 @Composable
-fun SpotterScreen (
+fun SpotterScreen(
     navController: NavHostController,
     viewModel: SpotterViewModel = hiltViewModel()
 ) {
@@ -54,7 +49,7 @@ fun SpotterScreen (
     SpotterContent(
         resultUiState = uiState.value,
         actionUiState = actionUiState.value,
-        processFrame = {
+        onColorCaptured = {
             viewModel.recognizeColor(it)
         }
     )
@@ -64,7 +59,7 @@ fun SpotterScreen (
 private fun SpotterContent(
     resultUiState: SpotterResultUiState,
     actionUiState: SpotterActionUiState,
-    processFrame : (String) -> Unit
+    onColorCaptured: (String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -89,24 +84,11 @@ private fun SpotterContent(
                 .padding(innerPadding),
         ) {
 
-            RequiresCameraPermission {
-                CameraPreview(){ hexColor ->
-                    processFrame(hexColor)
+            ColorQuantizerPreview(
+                onColorCaptured = { hexColor ->
+                    onColorCaptured(hexColor)
                 }
-
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    drawRect(
-                        color = Color.Black.copy(alpha = 0.5f), // Semi-transparent black overlay
-                        size = size // Fill the entire canvas
-                    )
-                    //create a hole
-                    drawCircle(
-                        color = Color.Transparent,
-                        radius = size.minDimension / 8,
-                        center = Offset(size.width / 2, size.height / 2),
-                        blendMode = BlendMode.Clear // Use Clear blend mode to create a hole
-                    )
-                }
+            ) {
 
                 Column(
                     Modifier
@@ -209,7 +191,10 @@ fun ButtonRetry(onClick: () -> Unit) {
 
 }
 
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@androidx.compose.ui.tooling.preview.Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
 @Composable
 private fun Preview_SpotterScreen_Loading() {
     ColourSpotterTheme {
@@ -220,12 +205,15 @@ private fun Preview_SpotterScreen_Loading() {
                 onUpdate = {},
                 onClickAction = {}
             ),
-            processFrame = { }
+            onColorCaptured = { }
         )
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@androidx.compose.ui.tooling.preview.Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
 @Composable
 private fun Preview_SpotterScreen_Idle() {
     ColourSpotterTheme {
@@ -236,12 +224,15 @@ private fun Preview_SpotterScreen_Idle() {
                 onUpdate = {},
                 onClickAction = {}
             ),
-            processFrame = { }
+            onColorCaptured = { }
         )
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@androidx.compose.ui.tooling.preview.Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
 @Composable
 private fun Preview_SpotterScreen_Error() {
     ColourSpotterTheme {
@@ -252,12 +243,15 @@ private fun Preview_SpotterScreen_Error() {
                 onUpdate = {},
                 onClickAction = {}
             ),
-            processFrame = { }
+            onColorCaptured = { }
         )
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@androidx.compose.ui.tooling.preview.Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
 @Composable
 private fun Preview_SpotterScreen_Result() {
     ColourSpotterTheme {
@@ -273,7 +267,7 @@ private fun Preview_SpotterScreen_Result() {
                 onUpdate = {},
                 onClickAction = {}
             ),
-            processFrame = { }
+            onColorCaptured = { }
         )
     }
 }

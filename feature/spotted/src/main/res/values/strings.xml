@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="request_permission">Request permission</string>
-    <string name="permission_camera_important_message">The camera is important for this app. Please grant the permission.</string>
-    <string name="permission_camera_message">"Camera permission required for this feature to be available. Please grant the permission"</string>
     <string name="error_unknown">Error unknown</string>
     <string name="retry_button">Retry</string>
     <string name="go_to_list_button_description">Go to list</string>

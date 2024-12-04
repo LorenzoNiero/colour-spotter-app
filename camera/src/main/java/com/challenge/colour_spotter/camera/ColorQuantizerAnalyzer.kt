@@ -15,12 +15,11 @@ class ColorQuantizerAnalyzer(
 
     private var lastAnalyzedTimeStamp = 0L
 
+    @OptIn(ExperimentalGetImage::class)
     override fun analyze(image: ImageProxy) {
 
         val currentTimestamp = System.currentTimeMillis()
-        if (currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(
-                SCAN_DELAY_MILLIS
-            )) {
+        if (currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(SCAN_DELAY_MILLIS)) {
             val bitmap = image.toBitmap()
 
             val croppedBitmap = getCentralCrop(bitmap)
