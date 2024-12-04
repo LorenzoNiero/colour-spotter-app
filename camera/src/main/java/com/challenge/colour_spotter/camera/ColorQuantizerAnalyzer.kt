@@ -2,15 +2,17 @@ package com.challenge.colour_spotter.camera
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import androidx.camera.core.ExperimentalGetImage
+import android.graphics.Matrix
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import androidx.camera.view.PreviewView
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
 class ColorQuantizerAnalyzer(
+    val previewView: PreviewView,
     private val onColorDetected: (String) -> Unit
 ) : ImageAnalysis.Analyzer {
 
@@ -20,7 +22,7 @@ class ColorQuantizerAnalyzer(
 
         val currentTimestamp = System.currentTimeMillis()
         if (currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(SCAN_DELAY_MILLIS)) {
-            val bitmap = image.toBitmap()
+            val bitmap = image.toBitmapRotated()
 
             val croppedBitmap = getCentralCrop(bitmap)
 
@@ -35,6 +37,12 @@ class ColorQuantizerAnalyzer(
         image.close()
     }
 
+    private fun ImageProxy.toBitmapRotated(): Bitmap {
+        val bitmap = toBitmap()
+        val matrix = Matrix()
+        matrix.postRotate(imageInfo.rotationDegrees.toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
 
     private fun getCentralCrop(bitmap: Bitmap): Bitmap {
         val cropSize = minOf(

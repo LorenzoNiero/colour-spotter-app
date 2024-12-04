@@ -28,6 +28,7 @@ room = "2.6.1"
 workRuntimeKtx = "2.9.0-rc01"
 coil = "2.5.0"
 paletteKtx = "1.0.0"
+cameraEffects = "1.4.0"
 
 
 
@@ -83,6 +84,7 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltA
 hilt-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 androidx-palette-ktx = { group = "androidx.palette", name = "palette-ktx", version.ref = "paletteKtx" }
+androidx-camera-effects = { group = "androidx.camera", name = "camera-effects", version.ref = "cameraEffects" }
 
 
 [bundles]
