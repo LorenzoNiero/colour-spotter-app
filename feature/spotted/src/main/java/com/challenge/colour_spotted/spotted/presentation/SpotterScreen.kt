@@ -1,5 +1,6 @@
 package com.challenge.colour_spotted.spotted.presentation
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -28,6 +29,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -54,6 +56,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import kotlinx.coroutines.launch
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import com.challenge.colour_spotter.ui.R as R_UI
 
 @Composable
@@ -68,7 +75,7 @@ fun SpotterScreen (
         resultUiState = uiState.value,
         actionUiState = actionUiState.value,
         processFrame = {
-//            viewModel.processFrame(it)
+            viewModel.recognizeColor(it)
         }
     )
 }
@@ -108,15 +115,15 @@ private fun SpotterContent(
                 }
 
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    // Draw your overlay here
                     drawRect(
                         color = Color.Black.copy(alpha = 0.5f), // Semi-transparent black overlay
                         size = size // Fill the entire canvas
                     )
+                    //create a hole
                     drawCircle(
-                        color = Color.Transparent, // Transparent circle to create a hole
-                        radius = size.minDimension / 8, // Adjust radius as needed
-                        center = Offset(size.width / 2, size.height / 2), // Center of the canvas
+                        color = Color.Transparent,
+                        radius = size.minDimension / 8,
+                        center = Offset(size.width / 2, size.height / 2),
                         blendMode = BlendMode.Clear // Use Clear blend mode to create a hole
                     )
                 }
@@ -265,41 +272,97 @@ fun CameraPreview(onFrameCaptured: (String) -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
-
-    AndroidView({ previewView }) { view ->
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-        cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
-
-            val preview = Preview.Builder().build()
-                .also {
-                    it.surfaceProvider = view.surfaceProvider
-
-            }
-
-            val imageAnalyzer = ImageAnalysis.Builder()
-//                .setMaxResolution(Size(1280, 720))
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also {
-                    it.setAnalyzer(ContextCompat.getMainExecutor(context), ColorQuantizerAnalyzer(
-
-                    ) { hexColor ->
-                        onFrameCaptured(hexColor)
-                        println("Color: $hexColor")
-                    })
-                }
-
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-            cameraProvider.bindToLifecycle(
-                lifecycleOwner,
-                cameraSelector,
-                preview,
-                imageAnalyzer
-            )
-        }, ContextCompat.getMainExecutor(context))
+    val previewUseCase = remember {
+        Preview.Builder().build().also {
+            it.surfaceProvider = previewView.surfaceProvider
+        }
     }
+
+    val cameraSelector = remember {
+        CameraSelector.Builder()
+            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+            .build()
+    }
+
+    val cameraExecutor = remember {
+        Executors.newSingleThreadExecutor()
+    }
+
+    val colorAnalyser = remember {
+        ColorQuantizerAnalyzer{ hexColor ->
+            onFrameCaptured(hexColor)
+        }
+    }
+
+    val imageAnalysis = remember {
+        ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_BLOCK_PRODUCER)
+            .build()
+            .also { it.setAnalyzer(cameraExecutor, colorAnalyser) }
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    AndroidView(
+        factory = {
+            coroutineScope.launch {
+                val cameraProvider = context.getCameraProvider()
+
+                runCatching {
+                    cameraProvider.unbindAll()
+                    cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        cameraSelector,
+                        previewUseCase,
+                        imageAnalysis
+                    )
+                }
+            }
+            previewView
+        }
+    )
+
+//    AndroidView({ previewView }) { view ->
+//        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+//        cameraProviderFuture.addListener({
+//            val cameraProvider = cameraProviderFuture.get()
+//
+//            val preview = Preview.Builder().build()
+//                .also {
+//                    it.surfaceProvider = view.surfaceProvider
+//            }
+//
+//            val imageAnalyzer = ImageAnalysis.Builder()
+////                .setMaxResolution(Size(1280, 720))
+//                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+//                .build()
+//                .also {
+//                    it.setAnalyzer(ContextCompat.getMainExecutor(context), colorAnalyser)
+//                }
+//
+//            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//            cameraProvider.unbindAll()
+//            cameraProvider.bindToLifecycle(
+//                lifecycleOwner,
+//                cameraSelector,
+//                preview,
+//                imageAnalyzer
+//            )
+//        }, ContextCompat.getMainExecutor(context))
+//    }
 }
+
+private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
+    suspendCoroutine { continuation ->
+        ProcessCameraProvider.getInstance(this).also { future ->
+            future.addListener({
+                continuation.resume(future.get())
+            }, executor)
+        }
+    }
+
+private val Context.executor: Executor
+    get() = ContextCompat.getMainExecutor(this)
 
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
