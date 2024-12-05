@@ -17,6 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.challenge.colour_spotter.camera.analyzer.ColorQuantizerAnalyzer_Test0
+import com.challenge.colour_spotter.camera.analyzer.ColorQuantizerAnalyzer_Test1
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -88,9 +90,9 @@ internal fun CameraPreviewAndAnalysis(
     }
 
     val colorQuantizerAnalyzer = remember {
-        ColorQuantizerAnalyzer (
-            previewView = previewView,
-            isEnable = enableScanning )
+        ColorQuantizerAnalyzer_Test0 (
+            isEnable = enableScanning
+        )
         { hexColor ->
             coroutineScope.launch {
                 onFrameCaptured(hexColor)
@@ -100,7 +102,7 @@ internal fun CameraPreviewAndAnalysis(
 
     val imageAnalysis = remember {
         ImageAnalysis.Builder()
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_BLOCK_PRODUCER)
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
             .also {
                 it.setAnalyzer(cameraExecutor, colorQuantizerAnalyzer)
