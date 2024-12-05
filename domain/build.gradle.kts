@@ -29,10 +29,6 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.work.runtime.ktx)
-    kapt(libs.androidx.hilt.compiler)
-
     testImplementation(libs.junit)
     testImplementation (libs.mockk)
     testImplementation(libs.kotlin.test.junit)
