@@ -82,7 +82,7 @@ private fun SpotterContent(
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.List,
-                            contentDescription = "none"
+                            contentDescription = stringResource(R.string.go_to_list_button_description)
                         )
                     }
                 }
