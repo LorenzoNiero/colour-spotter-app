@@ -237,16 +237,25 @@ fun ButtonRetry(onClick: () -> Unit) {
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-private fun Preview_SpotterScreen_Loading() {
+private fun Preview_SpotterScreen_Result() {
     ColourSpotterTheme {
         SpotterContent(
-            resultUiState = SpotterResultUiState.Loading,
+            resultUiState = SpotterResultUiState.Result(
+                ColorModel(
+                    name = "Red",
+                    hex = "#FF0000"
+                )
+            ),
             actionUiState = SpotterActionUiState.Action(
-                null,
+                textField = TextFieldAction(
+                    text = "",
+                    onUpdate = {},
+                    onClickAction = {}
+                ),
                 {}
             ),
             onColorCaptured = { },
-            isRunning = true
+            isRunning = false
         )
     }
 }
@@ -289,26 +298,19 @@ private fun Preview_SpotterScreen_Error() {
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-private fun Preview_SpotterScreen_Result() {
+private fun Preview_SpotterScreen_Loading() {
     ColourSpotterTheme {
         SpotterContent(
-            resultUiState = SpotterResultUiState.Result(
-                ColorModel(
-                    name = "Red",
-                    hex = "#FF0000"
-                )
-            ),
+            resultUiState = SpotterResultUiState.Loading,
             actionUiState = SpotterActionUiState.Action(
-                textField = TextFieldAction(
-                    text = "",
-                    onUpdate = {},
-                    onClickAction = {}
-                ),
+                null,
                 {}
             ),
             onColorCaptured = { },
-            isRunning = false
+            isRunning = true
         )
     }
 }
+
+
 

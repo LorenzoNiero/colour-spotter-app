@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-internal class ColorModule {
+internal class DomainModule {
     @Provides
     @Singleton
     fun provideHomeRepository(repository: ColorRepositoryImpl): ColorRepository = repository

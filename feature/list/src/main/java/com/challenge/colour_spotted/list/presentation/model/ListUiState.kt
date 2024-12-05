@@ -4,6 +4,7 @@ import com.challenge.colour_spotter.common.domain.model.ColorModel
 
 sealed class ListUiState {
     data object Loading : ListUiState()
+    data object Empty : ListUiState()
 
     data class Error(
         val message: String?,
