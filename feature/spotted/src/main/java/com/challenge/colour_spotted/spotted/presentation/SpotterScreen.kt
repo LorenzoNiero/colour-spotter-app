@@ -41,6 +41,7 @@ import com.challenge.colour_spotter.camera.ColorQuantizerPreview
 import com.challenge.colour_spotter.common.domain.model.ColorModel
 import com.challenge.colour_spotter.ui.component.ColorCell
 import com.challenge.colour_spotter.ui.component.TopBar
+import com.challenge.colour_spotter.ui.navigation.NavigationItem
 import com.challenge.colour_spotter.ui.theme.ColourSpotterTheme
 import com.challenge.colour_spotter.ui.R as R_UI
 
@@ -57,7 +58,8 @@ fun SpotterScreen(
         resultUiState = uiState.value,
         actionUiState = actionUiState.value,
         onColorCaptured = viewModel::recognizeColor,
-        isRunning = isRunning.value
+        isRunning = isRunning.value,
+        navController = navController
     )
 }
 
@@ -66,7 +68,8 @@ private fun SpotterContent(
     resultUiState: SpotterResultUiState,
     actionUiState: SpotterActionUiState,
     onColorCaptured: (String) -> Unit,
-    isRunning: Boolean
+    isRunning: Boolean,
+    navController: NavHostController? = null,
 ) {
     Scaffold(
         topBar = {
@@ -75,7 +78,7 @@ private fun SpotterContent(
                 onBackClick = null,
                 actions = {
                     IconButton(onClick = {
-                        //TODO
+                        navController?.navigate(NavigationItem.LIST.route)
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.List,

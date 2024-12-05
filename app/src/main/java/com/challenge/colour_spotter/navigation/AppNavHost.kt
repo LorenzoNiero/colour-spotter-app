@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.challenge.colour_spotted.list.presentation.ListScreen
 import com.challenge.colour_spotted.spotted.presentation.SpotterScreen
 import com.challenge.colour_spotter.ui.navigation.NavigationItem
 
@@ -23,6 +24,9 @@ fun AppNavHost(
     ) {
         composable(NavigationItem.CAMERA.route) {
             SpotterScreen(navController)
+        }
+        composable(NavigationItem.LIST.route) {
+            ListScreen(navController)
         }
 
     }

@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":ui"))
     implementation(project(":feature:spotted"))
+    implementation(project(":feature:list"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)

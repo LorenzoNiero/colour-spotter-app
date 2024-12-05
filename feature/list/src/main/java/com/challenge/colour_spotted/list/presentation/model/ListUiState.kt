@@ -2,14 +2,16 @@ package com.challenge.colour_spotted.list.presentation.model
 
 import com.challenge.colour_spotter.common.domain.model.ColorModel
 
-sealed class ListResultUiState {
-    data object Loading : ListResultUiState()
+sealed class ListUiState {
+    data object Loading : ListUiState()
 
     data class Error(
         val message: String?,
-    ) : ListResultUiState()
+    ) : ListUiState()
 
-    data class List(val list : ColorModel) : ListResultUiState()
+    data class Result(
+        val colors : List<ColorModel>
+    ) : ListUiState()
 }
 
 
