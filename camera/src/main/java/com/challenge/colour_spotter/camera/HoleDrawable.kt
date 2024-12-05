@@ -18,13 +18,13 @@ class HoleDrawable() : Drawable() {
     override fun draw(canvas: Canvas) {
         val bounds = canvas.getClipBounds()
 
-        // Draw the semi-transparent black rectangle
+        // Draw the semitransparent black rectangle
         canvas.drawRect(bounds, paint)
 
         // Calculate the size and position of the transparent circle
         val centerX = bounds.exactCenterX()
         val centerY = bounds.exactCenterY()
-        val radius = minOf(bounds.width(), bounds.height()) / 8f
+        val radius = minOf(bounds.width(), bounds.height()) * Constants.percentDivisionImage
 
         // Set the transfer mode to create the transparent hole
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)

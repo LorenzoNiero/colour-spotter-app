@@ -5,6 +5,7 @@ import android.graphics.Matrix
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.challenge.colour_spotter.camera.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -40,7 +41,7 @@ abstract class ColorQuantizerAnalyzerBase(
 
         val currentTimestamp = System.currentTimeMillis()
         try {
-            if (enable && currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(
+            if ( currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(
                     SCAN_DELAY_MILLIS
                 )
             ) {
@@ -51,8 +52,10 @@ abstract class ColorQuantizerAnalyzerBase(
 
                     val executionTime = measureTimeMillis {
                         val colorHex = analyzeColorFromImage(croppedBitmap)
-                        println("color look for: $colorHex")
-                        onColorDetected(colorHex)
+                        println("color dominated: $colorHex")
+                        if ( enable ) {
+                            onColorDetected(colorHex)
+                        }
                     }
 
                     println("Execution time: $executionTime ms")
@@ -94,9 +97,9 @@ abstract class ColorQuantizerAnalyzerBase(
     }
 
     protected fun getCentralCrop(bitmap: Bitmap): Bitmap {
-        val cropSize = minOf(
+        val cropSize = (minOf(
             abs(bitmap.width), abs(bitmap.height)
-        ) / 8
+        ) * Constants.percentDivisionImage).toInt()
         val x = max(0, (bitmap.width - cropSize) / 2)
         val y = max(0, (bitmap.height - cropSize) / 2)
 

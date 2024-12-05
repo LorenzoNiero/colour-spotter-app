@@ -17,8 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.challenge.colour_spotter.camera.analyzer.ColorQuantizerAnalyzer_Test0
-import com.challenge.colour_spotter.camera.analyzer.ColorQuantizerAnalyzer_Test1
+import com.challenge.colour_spotter.camera.analyzer.ColorQuantizerAnalyzerWithPaletteVersion4
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -49,7 +48,7 @@ fun BoxScope.ColorQuantizerPreview(
 //            //create a hole
 //            drawCircle(
 //                color = Color.Transparent,
-//                radius = size.minDimension / 8,
+//                radius = size.minDimension * Constants.divisionImage,
 //                center = Offset(size.width / 2, size.height / 2),
 //                blendMode = BlendMode.Clear // Use Clear blend mode to create a hole
 //            )
@@ -90,7 +89,7 @@ internal fun CameraPreviewAndAnalysis(
     }
 
     val colorQuantizerAnalyzer = remember {
-        ColorQuantizerAnalyzer_Test0 (
+        ColorQuantizerAnalyzerWithPaletteVersion4 (
             isEnable = enableScanning
         )
         { hexColor ->
@@ -102,6 +101,7 @@ internal fun CameraPreviewAndAnalysis(
 
     val imageAnalysis = remember {
         ImageAnalysis.Builder()
+//            .setOutputImageFormat( ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888 )
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
             .also {
