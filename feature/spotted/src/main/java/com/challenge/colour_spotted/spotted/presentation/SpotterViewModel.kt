@@ -1,10 +1,8 @@
 package com.challenge.colour_spotted.spotted.presentation
 
 import android.util.Log
-import androidx.lifecycle.AtomicReference
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.challenge.colour_spotted.spotted.BuildConfig
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterActionUiState
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterResultUiState
 import com.challenge.colour_spotted.spotted.presentation.model.TextFieldAction
@@ -12,20 +10,15 @@ import com.challenge.colour_spotter.common.addHashIfNeeded
 import com.challenge.colour_spotter.domain.usecase.GetColourInformationByHexUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 
-@OptIn(FlowPreview::class)
 @HiltViewModel
 class SpotterViewModel @Inject constructor(
     private val getColourInformationByHexUseCase : GetColourInformationByHexUseCase
@@ -57,44 +50,50 @@ class SpotterViewModel @Inject constructor(
     )
     val actionUIResult: StateFlow<SpotterActionUiState> = _actionUIResult.asStateFlow()
 
-    private val _isRunningUiState : MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val _isRunningUiState : MutableStateFlow<Boolean> = MutableStateFlow(false)
     internal val isRunningUiState: StateFlow<Boolean> by lazy { _isRunningUiState.asStateFlow() }
 
     private val _colorName: MutableStateFlow<String?> = MutableStateFlow(null)
     private val colorName: StateFlow<String?> by lazy { _colorName.asStateFlow() }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            colorName.sample(2000L).collectLatest { bitmap ->
+        viewModelScope.launch {
+            colorName.collectLatest { bitmap ->
                 bitmap?.let { hexCode ->
                     Log.e("", "hexCode: $hexCode")
-                    fetchColorDescription( hexCode )
+                    withContext(Dispatchers.IO) {
+                        fetchColorDescription(hexCode)
+                    }
                 }
             }
         }
     }
 
+//    private val fetchJob: AtomicReference<Job?> by lazy { AtomicReference(null) }
+    private suspend fun fetchColorDescription(hexColor : String) {
+//        if (fetchJob.get()?.isActive == true) {
+//            //skip
+//            return
+//        }
+        _resultUiState.emit( SpotterResultUiState.Loading)
 
-    private val fetchJob: AtomicReference<Job?> by lazy { AtomicReference(null) }
-    private fun fetchColorDescription(hexColor : String) {
-        if (fetchJob.get()?.isActive == true) {
-            //skip
-            return
+//        val newJob = viewModelScope.launch(Dispatchers.IO) {
+    withContext(Dispatchers.IO) {
+        _isRunningUiState.emit(false)
+        getColourInformationByHexUseCase(hexColor).onSuccess {
+            _resultUiState.emit(SpotterResultUiState.Result(it))
+        }.onFailure {
+            _resultUiState.emit(SpotterResultUiState.Error(
+                it.localizedMessage,
+                onRetry = { performAction() }
+            )
+            )
         }
-        _resultUiState.value = SpotterResultUiState.Loading
-        fetchJob.set(
-            viewModelScope.launch(Dispatchers.IO) {
-                _isRunningUiState.emit(false)
-                getColourInformationByHexUseCase(hexColor).onSuccess {
-                    _resultUiState.value = SpotterResultUiState.Result(it)
-                }.onFailure {
-                    _resultUiState.value = SpotterResultUiState.Error(
-                        it.localizedMessage,
-                        onRetry = { performAction() }
-                    )
-                }
-            }
-        )
+    }
+
+//        }
+//        fetchJob.set(newJob)
+//        newJob.join()
     }
 
     private fun updateText(newText: String) {

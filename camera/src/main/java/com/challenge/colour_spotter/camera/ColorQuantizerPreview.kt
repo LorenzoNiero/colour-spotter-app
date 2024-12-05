@@ -62,6 +62,7 @@ internal fun CameraPreviewAndAnalysis(
     enableScanning : Boolean,
     onFrameCaptured: (String) -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember {
@@ -89,9 +90,11 @@ internal fun CameraPreviewAndAnalysis(
     val colorQuantizerAnalyzer = remember {
         ColorQuantizerAnalyzer (
             previewView = previewView,
-            isEnable = enableScanning)
+            isEnable = enableScanning )
         { hexColor ->
-            onFrameCaptured(hexColor)
+            coroutineScope.launch {
+                onFrameCaptured(hexColor)
+            }
         }
     }
 
@@ -103,8 +106,6 @@ internal fun CameraPreviewAndAnalysis(
                 it.setAnalyzer(cameraExecutor, colorQuantizerAnalyzer)
             }
     }
-
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect (enableScanning){
         colorQuantizerAnalyzer.enable = enableScanning

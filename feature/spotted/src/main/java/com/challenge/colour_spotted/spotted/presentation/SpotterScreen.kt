@@ -16,6 +16,8 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -54,9 +56,7 @@ fun SpotterScreen(
     SpotterContent(
         resultUiState = uiState.value,
         actionUiState = actionUiState.value,
-        onColorCaptured = {
-            viewModel.recognizeColor(it)
-        },
+        onColorCaptured = viewModel::recognizeColor,
         isRunning = isRunning.value
     )
 }
@@ -93,10 +93,92 @@ private fun SpotterContent(
 
             ColorQuantizerPreview(
                 enableScanning = isRunning,
-                onColorCaptured = { hexColor ->
-                    onColorCaptured(hexColor)
-                }
+                onColorCaptured = onColorCaptured
             ) {
+
+                val enableButton = when (resultUiState) {
+                    SpotterResultUiState.Loading -> false
+                    else -> true
+                }
+
+                Column(
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(bottom = dimensionResource(R_UI.dimen.small))
+                        .padding(horizontal = dimensionResource(R_UI.dimen.normal))
+                ) {
+                    when (actionUiState) {
+                        is SpotterActionUiState.Action -> {
+                            Column {
+
+                                actionUiState.textField?.let { textFieldState ->
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(bottom = dimensionResource(R_UI.dimen.normal))
+                                            .padding(horizontal = dimensionResource(R_UI.dimen.small)),
+                                        horizontalArrangement = Arrangement.spacedBy(
+                                            dimensionResource(
+                                                R_UI.dimen.small
+                                            )
+                                        )
+                                    ) {
+
+                                        TextField(
+                                            value = textFieldState.text,
+                                            onValueChange = { textFieldState.onUpdate(it) },
+                                            enabled = enableButton,
+                                            modifier = Modifier.weight(1f),
+                                            singleLine = true,
+                                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                            keyboardActions = KeyboardActions(
+                                                onDone = { textFieldState.onClickAction() }
+                                            ),
+                                        )
+                                        Button(
+                                            onClick = { textFieldState.onClickAction() },
+                                            enabled = enableButton
+                                        ) {
+                                            Text(stringResource(R.string.search_button))
+                                        }
+                                    }
+                                }
+
+                                val buttonContentPadding = PaddingValues(
+                                    horizontal = dimensionResource(
+                                        R_UI.dimen.button_large_horizontal_padding
+                                    ),
+                                    vertical = dimensionResource(R_UI.dimen.button_large_vertical_padding)
+                                )
+
+                                if (isRunning) {
+                                    FilledTonalButton(
+                                        onClick = {
+                                            actionUiState.onStartOrStopClickAction()
+                                        },
+                                        enabled = enableButton,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentPadding = buttonContentPadding,
+                                        colors = ButtonDefaults.filledTonalButtonColors().copy(disabledContainerColor = ButtonDefaults.filledTonalButtonColors().containerColor.copy(alpha = 0.5f))
+                                    ) {
+                                        Text(stringResource(R.string.stop_button))
+                                    }
+                                } else {
+                                    ElevatedButton(
+                                        onClick = {
+                                            actionUiState.onStartOrStopClickAction()
+                                        },
+                                        enabled = enableButton,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentPadding = buttonContentPadding,
+                                        colors = ButtonDefaults.buttonColors().copy(disabledContainerColor = ButtonDefaults.buttonColors().containerColor.copy(alpha = 0.5f))
+                                    ) {
+                                        Text(stringResource(R.string.start_button))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 Column(
                     Modifier
@@ -136,71 +218,6 @@ private fun SpotterContent(
                         }
                     }
                 }
-
-                Column(
-                    Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(bottom = dimensionResource(R_UI.dimen.small))
-                        .padding(horizontal = dimensionResource(R_UI.dimen.normal))
-                ) {
-                    when (actionUiState) {
-                        is SpotterActionUiState.Action -> {
-                            Column {
-                                val enableButton = when (resultUiState) {
-                                    SpotterResultUiState.Loading -> false
-                                    else ->  true
-                                }
-
-                                actionUiState.textField?.let { textFieldState ->
-                                    Row(
-                                        modifier = Modifier
-                                            .padding(bottom = dimensionResource(R_UI.dimen.normal))
-                                            .padding(horizontal = dimensionResource(R_UI.dimen.small)),
-                                        horizontalArrangement = Arrangement.spacedBy(
-                                            dimensionResource(
-                                                R_UI.dimen.small
-                                            )
-                                        )
-                                    ) {
-
-                                        TextField(
-                                            value = textFieldState.text,
-                                            onValueChange = { textFieldState.onUpdate(it) },
-                                            enabled = enableButton,
-                                            modifier = Modifier.weight(1f),
-                                            singleLine = true,
-                                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                            keyboardActions = KeyboardActions(
-                                                onDone = { textFieldState.onClickAction() }
-                                            ),
-                                        )
-                                        Button(
-                                            onClick = { textFieldState.onClickAction() },
-                                            enabled = enableButton
-                                        ) {
-                                            Text(stringResource(R.string.search_button))
-                                        }
-                                    }
-                                }
-                                Button(
-                                    onClick = {
-                                        actionUiState.onStartOrStopClickAction()
-                                    },
-//                                    enabled = enableButton,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentPadding = PaddingValues(horizontal = dimensionResource(R_UI.dimen.button_large_horizontal_padding), vertical = dimensionResource(R_UI.dimen.button_large_vertical_padding))
-                                ) {
-                                    if (isRunning) {
-                                        Text(stringResource(R.string.stop_button))
-                                    }
-                                    else{
-                                        Text(stringResource(R.string.start_button))
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -226,7 +243,7 @@ private fun Preview_SpotterScreen_Loading() {
                 {}
             ),
             onColorCaptured = { },
-            isRunning = false
+            isRunning = true
         )
     }
 }

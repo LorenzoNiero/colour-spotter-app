@@ -18,7 +18,7 @@ import kotlin.math.min
 class ColorQuantizerAnalyzer(
     val previewView: PreviewView,
     isEnable: Boolean,
-    private val onColorDetected: (String) -> Unit
+    private val onColorDetected: suspend (String) -> Unit
 ) : ImageAnalysis.Analyzer {
 
     var enable = isEnable
@@ -27,8 +27,8 @@ class ColorQuantizerAnalyzer(
 
     override fun analyze(image: ImageProxy) {
 
+        val currentTimestamp = System.currentTimeMillis()
         try {
-            val currentTimestamp = System.currentTimeMillis()
             if (enable && currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(
                     SCAN_DELAY_MILLIS
                 )
