@@ -1,5 +1,6 @@
 package com.challenge.colour_spotter.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -7,7 +8,7 @@ import com.challenge.colour_spotter.database.dao.ColorDao
 import com.challenge.colour_spotter.database.model.ColorEntity
 
 
-const val VERSION_DATABASE = 1
+const val VERSION_DATABASE = 2
 
 @Database(
     entities = [
@@ -15,7 +16,7 @@ const val VERSION_DATABASE = 1
     ],
     version = VERSION_DATABASE,
     autoMigrations = [
-//         AutoMigration (from = 1, to = VERSION_DATABASE),
+         AutoMigration (from = 1, to = VERSION_DATABASE),
                 ],
     exportSchema = true,
 )

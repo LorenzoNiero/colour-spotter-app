@@ -5,12 +5,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,9 +49,11 @@ fun ListScreen(
 ) {
 
     val uiState = viewModel.listUiState.collectAsState()
+    val isDesc = viewModel.isDescUiState.collectAsState()
 
     ListSpotterContent(
         uiState = uiState.value,
+        isDesc = isDesc.value,
         navController = navController
     )
 
@@ -51,6 +63,7 @@ fun ListScreen(
 private fun ListSpotterContent(
     uiState: ListUiState,
     navController: NavHostController? = null,
+    isDesc: Boolean,
 ) {
     Scaffold(
         topBar = {
@@ -104,10 +117,51 @@ private fun ListSpotterContent(
                             vertical = dimensionResource(R_UI.dimen.padding_list_vertical),
                             horizontal = dimensionResource(R_UI.dimen.padding_list_horizontal)
                         ),
-                        verticalArrangement = Arrangement.spacedBy(dimensionResource(R_UI.dimen.spacing_between_items))
+                        verticalArrangement = Arrangement.spacedBy(dimensionResource(R_UI.dimen.spacing_between_items)),
+                        horizontalAlignment = Alignment.End
                     ) {
+                        item {
+                            IconButton(
+                                modifier = Modifier.width(50.dp),
+                                onClick = {
+                                    uiState.onSort()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowUpward.takeIf { isDesc } ?:  Icons.Filled.ArrowDownward,
+                                    contentDescription = "sort"
+                                )
+                            }
+                        }
                         items(items = uiState.colors) { color ->
-                            ColorCell(color)
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R_UI.dimen.small)),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                ColorCell(
+                                    color,
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                IconButton(
+                                    modifier = Modifier.width(50.dp),
+                                    onClick = {
+                                        uiState.onDelete(color)
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = stringResource(
+                                            R.string.delete_button_description,
+                                            color.name
+                                        )
+                                    )
+                                }
+                            }
+
                         }
                     }
                 }
@@ -124,15 +178,19 @@ private fun Preview_SpotterScreen_List() {
         ListSpotterContent(uiState = ListUiState.Result(
             colors = listOf(
                 ColorModel(
+                    id = "FFBB00",
                     name = "Red",
                     hex = "#FF0000"
                 ),
                 ColorModel(
+                    id = "FFBB00",
                     name = "Blue",
                     hex = "#FFBB00"
                 )
-            )
-        ))
+            ),
+            {},
+            {}
+        ), isDesc = true)
     }
 }
 
@@ -140,7 +198,7 @@ private fun Preview_SpotterScreen_List() {
 @Composable
 private fun Preview_SpotterScreen_Error() {
     ColourSpotterTheme {
-        ListSpotterContent(uiState = ListUiState.Error("message error"))
+        ListSpotterContent(uiState = ListUiState.Error("message error"), isDesc = true)
     }
 }
 
@@ -148,7 +206,7 @@ private fun Preview_SpotterScreen_Error() {
 @Composable
 private fun Preview_SpotterScreen_Empty() {
     ColourSpotterTheme {
-        ListSpotterContent(uiState = ListUiState.Empty)
+        ListSpotterContent(uiState = ListUiState.Empty, isDesc = true)
     }
 }
 
@@ -156,6 +214,6 @@ private fun Preview_SpotterScreen_Empty() {
 @Composable
 private fun Preview_SpotterScreen_Loading() {
     ColourSpotterTheme {
-        ListSpotterContent(uiState = ListUiState.Loading)
+        ListSpotterContent(uiState = ListUiState.Loading, isDesc = true)
     }
 }

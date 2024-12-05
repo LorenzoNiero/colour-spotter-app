@@ -45,7 +45,7 @@ fun ColorCell(color: ColorModel, modifier: Modifier = Modifier) {
     CardSurface(modifier) {
         Row(
             modifier = Modifier
-                .defaultMinSize(minWidth = 150.dp, minHeight = 50.dp)
+                .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
                 .padding(dimensionResource(R.dimen.small)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.normal)),
             verticalAlignment = Alignment.CenterVertically
@@ -59,7 +59,7 @@ fun ColorCell(color: ColorModel, modifier: Modifier = Modifier) {
                     )
             ) { }
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
@@ -69,7 +69,13 @@ fun ColorCell(color: ColorModel, modifier: Modifier = Modifier) {
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Text(text = color.hex, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.onSecondaryContainer)
+
+                Text(
+                    text = color.hex,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             }
         }
     }
@@ -82,6 +88,7 @@ private fun Preview_ColorCell() {
         Box(modifier = Modifier.width(500.dp)) {
             ColorCell(
                 color = ColorModel(
+                    id = "fcba03",
                     name = "Sun Yellow Light",
                     hex = "#fcba03"
                 ),

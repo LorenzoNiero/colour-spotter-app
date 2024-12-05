@@ -242,6 +242,7 @@ private fun Preview_SpotterScreen_Result() {
         SpotterContent(
             resultUiState = SpotterResultUiState.Result(
                 ColorModel(
+                    id = "FF0000",
                     name = "Red",
                     hex = "#FF0000"
                 )

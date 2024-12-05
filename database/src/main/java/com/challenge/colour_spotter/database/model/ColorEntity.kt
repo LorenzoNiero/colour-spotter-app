@@ -5,9 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = ColorEntity.TABLE_NAME)
 class ColorEntity (
-    @PrimaryKey
+    @PrimaryKey()
     override val id: String,
     val name: String,
+    val hex: String
     ) : BaseEntity() {
 
     companion object {

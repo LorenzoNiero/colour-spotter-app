@@ -11,7 +11,9 @@ sealed class ListUiState {
     ) : ListUiState()
 
     data class Result(
-        val colors : List<ColorModel>
+        val colors : List<ColorModel>,
+        val onDelete : (ColorModel) -> Unit,
+        val onSort : () -> Unit
     ) : ListUiState()
 }
 
