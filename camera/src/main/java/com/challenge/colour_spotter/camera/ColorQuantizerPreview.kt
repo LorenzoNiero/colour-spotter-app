@@ -9,6 +9,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -24,14 +25,18 @@ import kotlin.coroutines.suspendCoroutine
 
 @Composable
 fun BoxScope.ColorQuantizerPreview(
+    enableScanning : Boolean,
     onColorCaptured: (String) -> Unit,
     content: @Composable BoxScope.() -> Unit
 ) {
 
     RequiresCameraPermission {
-        CameraPreviewAndAnalysis(onColorCaptured)
+        CameraPreviewAndAnalysis(
+            enableScanning = enableScanning,
+            onFrameCaptured = onColorCaptured
+        )
 
-        //todo: to removed
+        //TODO: to removed
 //        Canvas(modifier = Modifier
 //            .fillMaxSize()
 //        ) {
@@ -54,6 +59,7 @@ fun BoxScope.ColorQuantizerPreview(
 
 @Composable
 internal fun CameraPreviewAndAnalysis(
+    enableScanning : Boolean,
     onFrameCaptured: (String) -> Unit,
 ) {
     val context = LocalContext.current
@@ -80,19 +86,29 @@ internal fun CameraPreviewAndAnalysis(
         Executors.newSingleThreadExecutor()
     }
 
+    val colorQuantizerAnalyzer = remember {
+        ColorQuantizerAnalyzer (
+            previewView = previewView,
+            isEnable = enableScanning)
+        { hexColor ->
+            onFrameCaptured(hexColor)
+        }
+    }
+
     val imageAnalysis = remember {
         ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_BLOCK_PRODUCER)
             .build()
             .also {
-                val analyzer = ColorQuantizerAnalyzer (previewView) { hexColor ->
-                    onFrameCaptured(hexColor)
-                }
-                it.setAnalyzer(cameraExecutor, analyzer)
+                it.setAnalyzer(cameraExecutor, colorQuantizerAnalyzer)
             }
     }
 
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect (enableScanning){
+        colorQuantizerAnalyzer.enable = enableScanning
+    }
 
     AndroidView(
         modifier = Modifier,

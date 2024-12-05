@@ -13,15 +13,18 @@ import kotlin.math.min
 
 class ColorQuantizerAnalyzer(
     val previewView: PreviewView,
+    isEnable: Boolean,
     private val onColorDetected: (String) -> Unit
 ) : ImageAnalysis.Analyzer {
+
+    var enable = isEnable
 
     private var lastAnalyzedTimeStamp = 0L
 
     override fun analyze(image: ImageProxy) {
 
         val currentTimestamp = System.currentTimeMillis()
-        if (currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(SCAN_DELAY_MILLIS)) {
+        if (enable && currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(SCAN_DELAY_MILLIS)) {
             val bitmap = image.toBitmapRotated()
 
             val croppedBitmap = getCentralCrop(bitmap)

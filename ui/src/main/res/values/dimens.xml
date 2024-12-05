@@ -13,4 +13,7 @@
     <dimen name="large">24dp</dimen>
     <dimen name="xlarge">32dp</dimen>
 
+    <dimen name="button_large_horizontal_padding">24dp</dimen>
+    <dimen name="button_large_vertical_padding">12dp</dimen>
+
 </resources>

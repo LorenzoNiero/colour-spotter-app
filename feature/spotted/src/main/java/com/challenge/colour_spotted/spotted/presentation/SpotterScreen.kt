@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,11 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.challenge.colour_spotted.spotted.R
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterActionUiState
 import com.challenge.colour_spotted.spotted.presentation.model.SpotterResultUiState
+import com.challenge.colour_spotted.spotted.presentation.model.TextFieldAction
 import com.challenge.colour_spotter.camera.ColorQuantizerPreview
 import com.challenge.colour_spotter.common.domain.model.ColorModel
 import com.challenge.colour_spotter.ui.component.ColorCell
@@ -45,13 +49,15 @@ fun SpotterScreen(
 ) {
     val uiState = viewModel.resultUiState.collectAsState()
     val actionUiState = viewModel.actionUIResult.collectAsState()
+    val isRunning = viewModel.isRunningUiState.collectAsState()
 
     SpotterContent(
         resultUiState = uiState.value,
         actionUiState = actionUiState.value,
         onColorCaptured = {
             viewModel.recognizeColor(it)
-        }
+        },
+        isRunning = isRunning.value
     )
 }
 
@@ -59,7 +65,8 @@ fun SpotterScreen(
 private fun SpotterContent(
     resultUiState: SpotterResultUiState,
     actionUiState: SpotterActionUiState,
-    onColorCaptured: (String) -> Unit
+    onColorCaptured: (String) -> Unit,
+    isRunning: Boolean
 ) {
     Scaffold(
         topBar = {
@@ -85,6 +92,7 @@ private fun SpotterContent(
         ) {
 
             ColorQuantizerPreview(
+                enableScanning = isRunning,
                 onColorCaptured = { hexColor ->
                     onColorCaptured(hexColor)
                 }
@@ -138,39 +146,56 @@ private fun SpotterContent(
                     when (actionUiState) {
                         is SpotterActionUiState.Action -> {
                             Column {
-                                Row(
-                                    modifier = Modifier.padding(dimensionResource(R_UI.dimen.small)),
-                                    horizontalArrangement = Arrangement.spacedBy(
-                                        dimensionResource(
-                                            R_UI.dimen.small
+                                val enableButton = when (resultUiState) {
+                                    SpotterResultUiState.Loading -> false
+                                    else ->  true
+                                }
+
+                                actionUiState.textField?.let { textFieldState ->
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(bottom = dimensionResource(R_UI.dimen.normal))
+                                            .padding(horizontal = dimensionResource(R_UI.dimen.small)),
+                                        horizontalArrangement = Arrangement.spacedBy(
+                                            dimensionResource(
+                                                R_UI.dimen.small
+                                            )
                                         )
-                                    )
-                                ) {
-                                    TextField(
-                                        value = actionUiState.text,
-                                        onValueChange = { actionUiState.onUpdate(it) },
-                                        enabled = resultUiState !is SpotterResultUiState.Loading,
-                                        modifier = Modifier.weight(1f),
-                                        singleLine = true,
-                                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                        keyboardActions = KeyboardActions(
-                                            onDone = { actionUiState.onClickAction() }
-                                        ),
-                                    )
-                                    Button(
-                                        onClick = { actionUiState.onClickAction() },
-                                        enabled = resultUiState !is SpotterResultUiState.Loading
                                     ) {
-                                        Text(stringResource(R.string.search_button))
+
+                                        TextField(
+                                            value = textFieldState.text,
+                                            onValueChange = { textFieldState.onUpdate(it) },
+                                            enabled = enableButton,
+                                            modifier = Modifier.weight(1f),
+                                            singleLine = true,
+                                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                            keyboardActions = KeyboardActions(
+                                                onDone = { textFieldState.onClickAction() }
+                                            ),
+                                        )
+                                        Button(
+                                            onClick = { textFieldState.onClickAction() },
+                                            enabled = enableButton
+                                        ) {
+                                            Text(stringResource(R.string.search_button))
+                                        }
                                     }
                                 }
                                 Button(
                                     onClick = {
-                                        //todo
+                                        actionUiState.onStartOrStopClickAction()
                                     },
-                                    modifier = Modifier
+                                    enabled = enableButton,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentPadding = PaddingValues(horizontal = dimensionResource(R_UI.dimen.button_large_horizontal_padding), vertical = dimensionResource(R_UI.dimen.button_large_vertical_padding))
                                 ) {
-                                    Text("Start/Stop")
+                                    if (isRunning) {
+                                        Text(stringResource(R.string.stop_button))
+                                    }
+                                    else{
+                                        Text(stringResource(R.string.start_button))
+                                    }
                                 }
                             }
                         }
@@ -188,70 +213,61 @@ fun ButtonRetry(onClick: () -> Unit) {
     ) {
         Text(text = stringResource(R.string.retry_button))
     }
-
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun Preview_SpotterScreen_Loading() {
     ColourSpotterTheme {
         SpotterContent(
             resultUiState = SpotterResultUiState.Loading,
             actionUiState = SpotterActionUiState.Action(
-                text = "",
-                onUpdate = {},
-                onClickAction = {}
+                null,
+                {}
             ),
-            onColorCaptured = { }
+            onColorCaptured = { },
+            isRunning = false
         )
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun Preview_SpotterScreen_Idle() {
     ColourSpotterTheme {
         SpotterContent(
             resultUiState = SpotterResultUiState.Idle,
             actionUiState = SpotterActionUiState.Action(
-                text = "",
-                onUpdate = {},
-                onClickAction = {}
+                textField = TextFieldAction(
+                    text = "",
+                    onUpdate = {},
+                    onClickAction = {}
+                ),
+                {}
             ),
-            onColorCaptured = { }
+            onColorCaptured = { },
+            isRunning = false
         )
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun Preview_SpotterScreen_Error() {
     ColourSpotterTheme {
         SpotterContent(
             resultUiState = SpotterResultUiState.Error("Message error", {}),
             actionUiState = SpotterActionUiState.Action(
-                text = "",
-                onUpdate = {},
-                onClickAction = {}
+                null,
+                {}
             ),
-            onColorCaptured = { }
+            onColorCaptured = { },
+            isRunning = false
         )
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun Preview_SpotterScreen_Result() {
     ColourSpotterTheme {
@@ -263,11 +279,15 @@ private fun Preview_SpotterScreen_Result() {
                 )
             ),
             actionUiState = SpotterActionUiState.Action(
-                text = "",
-                onUpdate = {},
-                onClickAction = {}
+                textField = TextFieldAction(
+                    text = "",
+                    onUpdate = {},
+                    onClickAction = {}
+                ),
+                {}
             ),
-            onColorCaptured = { }
+            onColorCaptured = { },
+            isRunning = false
         )
     }
 }
