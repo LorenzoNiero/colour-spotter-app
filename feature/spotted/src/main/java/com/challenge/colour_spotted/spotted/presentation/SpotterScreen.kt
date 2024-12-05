@@ -186,7 +186,7 @@ private fun SpotterContent(
                                     onClick = {
                                         actionUiState.onStartOrStopClickAction()
                                     },
-                                    enabled = enableButton,
+//                                    enabled = enableButton,
                                     modifier = Modifier.fillMaxWidth(),
                                     contentPadding = PaddingValues(horizontal = dimensionResource(R_UI.dimen.button_large_horizontal_padding), vertical = dimensionResource(R_UI.dimen.button_large_vertical_padding))
                                 ) {

@@ -57,7 +57,7 @@ class SpotterViewModel @Inject constructor(
     )
     val actionUIResult: StateFlow<SpotterActionUiState> = _actionUIResult.asStateFlow()
 
-    private val _isRunningUiState : MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _isRunningUiState : MutableStateFlow<Boolean> = MutableStateFlow(true)
     internal val isRunningUiState: StateFlow<Boolean> by lazy { _isRunningUiState.asStateFlow() }
 
     private val _colorName: MutableStateFlow<String?> = MutableStateFlow(null)
