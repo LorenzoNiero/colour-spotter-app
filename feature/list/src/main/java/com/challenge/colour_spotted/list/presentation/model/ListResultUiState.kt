@@ -1,4 +1,4 @@
-package com.challenge.colour_spotted.spotted.presentation.model
+package com.challenge.colour_spotted.list.presentation.model
 
 import com.challenge.colour_spotter.common.domain.model.ColorModel
 

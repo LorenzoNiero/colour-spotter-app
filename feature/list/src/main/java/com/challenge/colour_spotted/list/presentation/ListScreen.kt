@@ -1,4 +1,4 @@
-package com.challenge.colour_spotted.spotted.presentation
+package com.challenge.colour_spotted.list.presentation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
@@ -64,6 +64,6 @@ private fun ListSpotterContent(
 @Composable
 private fun Preview_SpotterScreen_Loading() {
     ColourSpotterTheme {
-
+        ListSpotterContent()
     }
 }

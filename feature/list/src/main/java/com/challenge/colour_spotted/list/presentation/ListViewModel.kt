@@ -1,4 +1,4 @@
-package com.challenge.colour_spotted.spotted.presentation
+package com.challenge.colour_spotted.list.presentation
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
