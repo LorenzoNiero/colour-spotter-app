@@ -2,17 +2,20 @@
 
 ## Overview
 
-Colour Spotter is an Android application that allows users to capture and analysing the video feed in real-time from images using the device's camera to find the most common colour value inside the target hole.
+**Colour Spotter** is an Android app that allows users to identify the predominant color of a central portion of the camera feed in real-time.  
+Using **CameraX** and **Jetpack Compose**, the app displays a video preview with an overlay that highlights a central area for color selection.  
+The user can start the acquisition and obtain the color name, which is determined through a call to an external API.  
+The app is designed to demonstrate the use of **CameraX** for video streaming, real-time image processing, and UI management via **Jetpack Compose**.  
+It also includes the ability to store acquired colors for later viewing and management.  
+
 The app is based on [Android developers architecture](https://developer.android.com/jetpack/guide?gclsrc=ds&gclsrc=ds)
 developed with [Jetpack Compose](https://developer.android.com/jetpack/compose).
 
 ## Features
 
-* **Color Capture:** Capture colors from images using the device's camera.
 * **Color Identification:** Identify the dominant color
 * **Database Integration:** Store and retrieve color palettes using a local database (Room).
 * **Dynamic Updates:** The color list automatically updates with database changes.
-* **MVVM Architecture:** Follows the Model-View-ViewModel architectural pattern for clean code organization.
 * **Jetpack Compose:** Built with Jetpack Compose for a modern and declarative UI.
 * **Material Design 3:** Adheres to Material Design 3 guidelines for a consistent and user-friendly experience.
 
@@ -27,7 +30,9 @@ To run the app locally, follow these steps:
 **Requirements:**
 
 I used Android Studio Ladybug | 2024.2.1 Patch 3
+
 I have used a emulator "Pixel 7" to reference with Android api level 35 
+
 I used a real Pixel 7 with Android 15 api level 35 and a Galaxy A21s with Android 12 api level 32
 
 
