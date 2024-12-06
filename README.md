@@ -2,7 +2,7 @@
 
 ## Overview
 
-Colour Spotter is an Android application that allows users to capture and identify colors from images using the device's camera. 
+Colour Spotter is an Android application that allows users to capture and analysing the video feed in real-time from images using the device's camera to find the most common colour value inside the target hole.
 The app is based on [Android developers architecture](https://developer.android.com/jetpack/guide?gclsrc=ds&gclsrc=ds)
 developed with [Jetpack Compose](https://developer.android.com/jetpack/compose).
 
