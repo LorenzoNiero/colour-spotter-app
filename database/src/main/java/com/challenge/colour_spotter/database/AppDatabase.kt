@@ -8,7 +8,7 @@ import com.challenge.colour_spotter.database.dao.ColorDao
 import com.challenge.colour_spotter.database.model.ColorEntity
 
 
-const val VERSION_DATABASE = 2
+const val VERSION_DATABASE = 1
 
 @Database(
     entities = [
@@ -16,7 +16,7 @@ const val VERSION_DATABASE = 2
     ],
     version = VERSION_DATABASE,
     autoMigrations = [
-         AutoMigration (from = 1, to = VERSION_DATABASE),
+//         AutoMigration (from = 1, to = VERSION_DATABASE),
                 ],
     exportSchema = true,
 )

@@ -55,23 +55,36 @@ The app follows an implementation of mudularazition by features:
 - *database* : contains utils to manage db, models database and dao;
 - *network* : it implements manage network, network models
 - *ui* : it contains app theme and custom view;
-- *feature/spotter* : 
-- *feature/list* : implements list color and owr viewmodel;
-- *camera* : implements camera and logic to quantize color
+- *feature/spotter* : implements color spotting screen, including camera preview, color quantization, and color name retrieval. It handles user interactions for capturing colors and displaying the identified color information.
+- *feature/list* : implements the UI for displaying and managing the list of captured colors. It provides functionalities deleting colors, and observing database updates to keep the list synchronized. 
+- *camera* : provides functionalities for accessing and managing the device s camera. It handles camera setup, preview, and image analysis for color quantizzation. It encapsulates the logic for extracting color information from camera frames.
 
 This the graph of dependencies:
 
-<img width="371" alt="Colour Spotter" src="https://github.com/LorenzoNiero/colour-spotter-app/blob/develop/gradle/dependency-graph/project.dot.png">
+TODO
 
 ## Testing
 
 The project includes unit tests for the network, domain, and data modules. 
 You can find them in the respective module directories.
 
+Execute all unit test witu:
+
+```
+gradle testDevDebugUnitTest
+```
+
+```
+./gradlew testDevDebugUnitTest
+```
+
 ## Screenshots
 
-<img src="screenshot/previews.jpg" alt="previes" >
+<img src="screenshot/previews.jpg" alt="preview" >
 
 ### Todo
-- enable obfuscation code with R8
+- Optimize the image cropping process to ensure that the analyzed image center is precisely aligned with the screen center.
+- Implement the ability to sort the list by color name
+- Replacing Log.e and printf with a logging module to consolidate and standardize logging across the application.
 - implement more unit test. For example in ViewModel
+- enable obfuscation code with R8

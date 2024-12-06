@@ -8,4 +8,12 @@ object EntityMock {
         name = "Cerulean",
         hex = "#24B1E0",
     )
+
+    val colorList = listOf(
+        ColorEntity(
+        id = "24B1E0",
+        name = "Cerulean",
+        hex = "#24B1E0",
+        )
+    )
 }

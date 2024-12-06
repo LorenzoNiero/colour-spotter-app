@@ -55,7 +55,6 @@ class RepositoryTest {
     @Test
     fun `fetchColorInfo with hex code valid should call networkDataSource and throw exception`() = runTest {
         // Given
-        val colorNetwork = DataMock.colorNetwork
         coEvery { networkDataSource.fetchColorInfo(any()) } throws Exception()
 
         // When

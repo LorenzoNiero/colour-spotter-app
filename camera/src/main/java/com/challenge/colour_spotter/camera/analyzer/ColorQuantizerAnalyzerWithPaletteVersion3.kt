@@ -16,7 +16,7 @@ Execution time: 35 ms
     color dominated: #C8C8C8
     Execution time: 30 ms
  */
-class ColorQuantizerAnalyzerWithPaletteVersion4 (
+class ColorQuantizerAnalyzerWithPaletteVersion3 (
     isEnable: Boolean,
     onColorDetected: suspend (String) -> Unit
 ) : ColorQuantizerAnalyzerBase(isEnable, onColorDetected) {

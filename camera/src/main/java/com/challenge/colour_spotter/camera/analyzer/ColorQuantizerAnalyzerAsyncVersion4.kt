@@ -2,13 +2,11 @@ package com.challenge.colour_spotter.camera.analyzer
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import androidx.camera.core.ImageProxy
 import com.challenge.colour_spotter.camera.extension.toHexColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import java.nio.ByteBuffer
 
 /**
     Execution time: 494 ms
@@ -16,7 +14,7 @@ import java.nio.ByteBuffer
     Execution time: 511 ms
     color dominated: #C0C0C0
  */
-class ColorQuantizerAnalyzer_Test3 (
+class ColorQuantizerAnalyzerAsyncVersion4 (
     isEnable: Boolean,
     onColorDetected: suspend (String) -> Unit
 ) : ColorQuantizerAnalyzerBase(isEnable, onColorDetected) {

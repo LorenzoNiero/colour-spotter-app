@@ -7,17 +7,22 @@ import androidx.camera.core.Preview
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.challenge.colour_spotter.camera.analyzer.ColorQuantizerAnalyzerWithPaletteVersion4
+import com.challenge.colour_spotter.camera.analyzer.ColorQuantizerAnalyzerAsyncVersion4
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -26,18 +31,18 @@ import kotlin.coroutines.suspendCoroutine
 
 @Composable
 fun BoxScope.ColorQuantizerPreview(
-    enableScanning : Boolean,
+    enableAnalysisImage : Boolean,
     onColorCaptured: (String) -> Unit,
     content: @Composable BoxScope.() -> Unit
 ) {
 
     RequiresCameraPermission {
         CameraPreviewAndAnalysis(
-            enableScanning = enableScanning,
-            onFrameCaptured = onColorCaptured
+            enableAnalysisImage = enableAnalysisImage,
+            onColorCaptured = onColorCaptured
         )
 
-        //TODO: to removed
+        // TODO: to removed, alternative way to create a hole
 //        Canvas(modifier = Modifier
 //            .fillMaxSize()
 //        ) {
@@ -48,7 +53,7 @@ fun BoxScope.ColorQuantizerPreview(
 //            //create a hole
 //            drawCircle(
 //                color = Color.Transparent,
-//                radius = size.minDimension * Constants.divisionImage,
+//                radius = size.minDimension * Constants.percentDivisionImage,
 //                center = Offset(size.width / 2, size.height / 2),
 //                blendMode = BlendMode.Clear // Use Clear blend mode to create a hole
 //            )
@@ -60,8 +65,8 @@ fun BoxScope.ColorQuantizerPreview(
 
 @Composable
 internal fun CameraPreviewAndAnalysis(
-    enableScanning : Boolean,
-    onFrameCaptured: (String) -> Unit,
+    enableAnalysisImage : Boolean,
+    onColorCaptured: (String) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -89,19 +94,18 @@ internal fun CameraPreviewAndAnalysis(
     }
 
     val colorQuantizerAnalyzer = remember {
-        ColorQuantizerAnalyzerWithPaletteVersion4 (
-            isEnable = enableScanning
+        ColorQuantizerAnalyzerAsyncVersion4 (
+            isEnable = enableAnalysisImage
         )
         { hexColor ->
             coroutineScope.launch {
-                onFrameCaptured(hexColor)
+                onColorCaptured(hexColor)
             }
         }
     }
 
     val imageAnalysis = remember {
         ImageAnalysis.Builder()
-//            .setOutputImageFormat( ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888 )
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
             .also {
@@ -109,8 +113,8 @@ internal fun CameraPreviewAndAnalysis(
             }
     }
 
-    LaunchedEffect (enableScanning){
-        colorQuantizerAnalyzer.enable = enableScanning
+    LaunchedEffect (enableAnalysisImage){
+        colorQuantizerAnalyzer.enable = enableAnalysisImage
     }
 
     AndroidView(

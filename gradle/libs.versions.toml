@@ -27,6 +27,7 @@ room = "2.6.1"
 coil = "2.5.0"
 paletteKtx = "1.0.0"
 cameraEffects = "1.4.0"
+turbine = "1.2.0"
 
 
 
@@ -67,6 +68,7 @@ moshi-gen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = 
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofitMoshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }

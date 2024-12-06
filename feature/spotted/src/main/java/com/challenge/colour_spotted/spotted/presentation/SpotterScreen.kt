@@ -45,6 +45,10 @@ import com.challenge.colour_spotter.ui.navigation.NavigationItem
 import com.challenge.colour_spotter.ui.theme.ColourSpotterTheme
 import com.challenge.colour_spotter.ui.R as R_UI
 
+/**
+ * Color spotting screen, including camera preview, color quantization, and color name retrieval.
+ * It handles user interactions for capturing colors and displaying the identified color information.
+ */
 @Composable
 fun SpotterScreen(
     navController: NavHostController,
@@ -52,13 +56,13 @@ fun SpotterScreen(
 ) {
     val uiState = viewModel.resultUiState.collectAsState()
     val actionUiState = viewModel.actionUIResult.collectAsState()
-    val isRunning = viewModel.isRunningUiState.collectAsState()
+    val isAnalysisEnableState = viewModel.isImageAnalysisEnabledState.collectAsState()
 
     SpotterContent(
         resultUiState = uiState.value,
         actionUiState = actionUiState.value,
-        onColorCaptured = viewModel::recognizeColor,
-        isRunning = isRunning.value,
+        onColorCaptured = viewModel::detectedColor,
+        isAnalysisEnableState = isAnalysisEnableState.value,
         navController = navController
     )
 }
@@ -68,7 +72,7 @@ private fun SpotterContent(
     resultUiState: SpotterResultUiState,
     actionUiState: SpotterActionUiState,
     onColorCaptured: (String) -> Unit,
-    isRunning: Boolean,
+    isAnalysisEnableState: Boolean,
     navController: NavHostController? = null,
 ) {
     Scaffold(
@@ -95,7 +99,7 @@ private fun SpotterContent(
         ) {
 
             ColorQuantizerPreview(
-                enableScanning = isRunning,
+                enableAnalysisImage = isAnalysisEnableState,
                 onColorCaptured = onColorCaptured
             ) {
 
@@ -153,7 +157,7 @@ private fun SpotterContent(
                                     vertical = dimensionResource(R_UI.dimen.button_large_vertical_padding)
                                 )
 
-                                if (isRunning) {
+                                if (isAnalysisEnableState) {
                                     FilledTonalButton(
                                         onClick = {
                                             actionUiState.onStartOrStopClickAction()
@@ -256,7 +260,7 @@ private fun Preview_SpotterScreen_Result() {
                 {}
             ),
             onColorCaptured = { },
-            isRunning = false
+            isAnalysisEnableState = false
         )
     }
 }
@@ -276,7 +280,7 @@ private fun Preview_SpotterScreen_Idle() {
                 {}
             ),
             onColorCaptured = { },
-            isRunning = false
+            isAnalysisEnableState = false
         )
     }
 }
@@ -292,7 +296,7 @@ private fun Preview_SpotterScreen_Error() {
                 {}
             ),
             onColorCaptured = { },
-            isRunning = false
+            isAnalysisEnableState = false
         )
     }
 }
@@ -308,7 +312,7 @@ private fun Preview_SpotterScreen_Loading() {
                 {}
             ),
             onColorCaptured = { },
-            isRunning = true
+            isAnalysisEnableState = true
         )
     }
 }

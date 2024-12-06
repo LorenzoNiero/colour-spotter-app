@@ -40,6 +40,9 @@ import com.challenge.colour_spotter.ui.component.TopBar
 import com.challenge.colour_spotter.ui.theme.ColourSpotterTheme
 import com.challenge.colour_spotter.ui.R as R_UI
 
+/**
+ * List colors scannned screen.
+ */
 @Composable
 fun ListScreen(
     navController: NavHostController,

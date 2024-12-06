@@ -15,12 +15,11 @@ color look for: #040404
 Execution time: 1930 ms
  *
  */
-class ColorQuantizerAnalyzer_Test1(
+class ColorQuantizerAnalyzer_EasyOptimization_Version1(
     isEnable: Boolean,
     onColorDetected: suspend (String) -> Unit
 ) : ColorQuantizerAnalyzerBase(isEnable, onColorDetected) {
 
-    private var lastAnalyzedTimeStamp = 0L
     override suspend fun analyzeColorFromImage(croppedBitmap: Bitmap): String {
 
         val dominantColor = getDominantColor(croppedBitmap)

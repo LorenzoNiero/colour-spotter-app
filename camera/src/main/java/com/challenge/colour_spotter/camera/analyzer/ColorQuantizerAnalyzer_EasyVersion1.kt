@@ -20,12 +20,11 @@ import com.challenge.colour_spotter.camera.extension.toHexColor
  * Execution time: 1764 ms
  *
  */
-class ColorQuantizerAnalyzer_Test0(
+class ColorQuantizerAnalyzer_EasyVersion1(
     isEnable: Boolean,
     onColorDetected: suspend (String) -> Unit
 ) : ColorQuantizerAnalyzerBase(isEnable, onColorDetected) {
 
-    private var lastAnalyzedTimeStamp = 0L
     override suspend fun analyzeColorFromImage(croppedBitmap: Bitmap): String {
 
         val dominantColor = getDominantColor(croppedBitmap)

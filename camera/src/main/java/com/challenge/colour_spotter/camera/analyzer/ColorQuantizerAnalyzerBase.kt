@@ -41,29 +41,30 @@ abstract class ColorQuantizerAnalyzerBase(
 
         val currentTimestamp = System.currentTimeMillis()
         try {
-            if ( currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(
+            if (enable && currentTimestamp - lastAnalyzedTimeStamp >= TimeUnit.MILLISECONDS.toMillis(
                     SCAN_DELAY_MILLIS
                 )
             ) {
-                runBlocking (Dispatchers.IO) {
+                runBlocking(Dispatchers.IO) {
                     val bitmap = imageProxy.toBitmapRotated()
 
                     val croppedBitmap = getCentralCrop(bitmap)
 
-                    val executionTime = measureTimeMillis {
-                        val colorHex = analyzeColorFromImage(croppedBitmap)
-                        println("color dominated: $colorHex")
-                        if ( enable ) {
-                            onColorDetected(colorHex)
-                        }
-                    }
+                    //TODO: uncomment to see the execution time to analyze the color
+//                    val executionTime = measureTimeMillis {
+                    val colorHex = analyzeColorFromImage(croppedBitmap)
+                    println("color dominated: $colorHex")
 
-                    println("Execution time: $executionTime ms")
+                    onColorDetected(colorHex)
+//
+//                    }
+//
+//                    println("Execution time: $executionTime ms")
 
                     lastAnalyzedTimeStamp = currentTimestamp
                 }
             }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             Log.e("ColorQuantizerAnalyzerBase", "error analyze: ", e)
         } finally {
             imageProxy.close()
