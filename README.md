@@ -27,13 +27,12 @@ To run the app locally, follow these steps:
 3. Select build variant *devDebug* in *app* module
 4. Build and run the app on an Android emulator or device.
 
+
 **Requirements:**
 
-I used Android Studio Ladybug | 2024.2.1 Patch 3
-
-I have used a emulator "Pixel 7" to reference with Android api level 35 
-
-I used a real Pixel 7 with Android 15 api level 35 and a Galaxy A21s with Android 12 api level 32
+-I used Android Studio Ladybug | 2024.2.1 Patch 3  
+-I have used a emulator "Pixel 7" to reference with Android api level 35  
+-I used a real Pixel 7 with Android 15 api level 35 and a Galaxy A21s with Android 12 api level 32
 
 
 ## Architecture and library used
@@ -70,6 +69,10 @@ The project includes unit tests for the network, domain, and data modules.
 You can find them in the respective module directories.
 
 ## Screenshots
+
+<img src="screenshot/screen_home.png" alt="Home" width="150">
+<img src="screenshot/screen_list.png" alt="List" width="150">
+
 
 TODO
 
