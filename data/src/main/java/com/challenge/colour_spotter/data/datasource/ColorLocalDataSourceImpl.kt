@@ -1,6 +1,5 @@
 package com.challenge.colour_spotter.data.datasource
 
-import androidx.core.os.trace
 import com.challenge.colour_spotter.database.dao.ColorDao
 import com.challenge.colour_spotter.database.model.ColorEntity
 import kotlinx.coroutines.flow.Flow

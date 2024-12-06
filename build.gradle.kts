@@ -35,3 +35,5 @@ allprojects {
         }
     }
 }
+
+apply(from = file("gradle/projectDependencyGraph.gradle"))
