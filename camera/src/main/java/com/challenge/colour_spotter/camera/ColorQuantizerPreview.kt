@@ -7,22 +7,18 @@ import androidx.camera.core.Preview
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.challenge.colour_spotter.camera.analyzer.ColorQuantizerAnalyzerAsyncVersion4
+import com.challenge.colour_spotter.camera.analyzer.ColorAnalyzer_Palette_Version3
+import com.challenge.colour_spotter.camera.analyzer.ColorAnalyzer_QuantizerAsync_Version5
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -94,7 +90,7 @@ internal fun CameraPreviewAndAnalysis(
     }
 
     val colorQuantizerAnalyzer = remember {
-        ColorQuantizerAnalyzerAsyncVersion4 (
+        ColorAnalyzer_QuantizerAsync_Version5 (
             isEnable = enableAnalysisImage
         )
         { hexColor ->

@@ -2,6 +2,7 @@ package com.challenge.colour_spotter.camera.analyzer
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import com.challenge.colour_spotter.camera.analyzer.base.ColorQuantizerAnalyzerBase
 import com.challenge.colour_spotter.camera.extension.toHexColor
 
 /**
@@ -19,8 +20,18 @@ import com.challenge.colour_spotter.camera.extension.toHexColor
  * color look for: #040404
  * Execution time: 1764 ms
  *
+ * A simple implementation of [ColorQuantizerAnalyzerBase] that analyzes an image
+ * to identify the dominant color by iterating through all pixels.
+ *
+ * This analyzer does **not** use color quantization techniques. Instead, it directly
+ * iterates through each pixel of the image, counting the occurrences of each color.
+ * The color with the highest frequency is considered the dominant color.
+ *
+ * Note: This is a basic implementation and might not be as efficient as
+ * analyzers that employ color quantization for larger images.
+ *
  */
-class ColorQuantizerAnalyzer_EasyVersion1(
+class ColorAnalyzer_Simple_Version1(
     isEnable: Boolean,
     onColorDetected: suspend (String) -> Unit
 ) : ColorQuantizerAnalyzerBase(isEnable, onColorDetected) {

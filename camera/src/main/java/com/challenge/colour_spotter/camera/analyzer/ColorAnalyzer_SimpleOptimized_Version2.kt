@@ -2,6 +2,7 @@ package com.challenge.colour_spotter.camera.analyzer
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import com.challenge.colour_spotter.camera.analyzer.base.ColorQuantizerAnalyzerBase
 import com.challenge.colour_spotter.camera.extension.toHexColor
 
 /**
@@ -13,9 +14,11 @@ color look for: #040404
 Execution time: 1928 ms
 color look for: #040404
 Execution time: 1930 ms
+
+See for detail [ColorAnalyzer_Simple_Version1]
  *
  */
-class ColorQuantizerAnalyzer_EasyOptimization_Version1(
+class ColorAnalyzer_SimpleOptimized_Version2(
     isEnable: Boolean,
     onColorDetected: suspend (String) -> Unit
 ) : ColorQuantizerAnalyzerBase(isEnable, onColorDetected) {
@@ -37,7 +40,6 @@ class ColorQuantizerAnalyzer_EasyOptimization_Version1(
         }.groupingBy { Color.rgb(Color.red(it), Color.green(it), Color.blue(it)) }
             .eachCount()
 
-        scaledBitmap.recycle() // Recycle the scaled bitmap
         return colorCount.maxByOrNull { it.value }?.key ?: Color.BLACK
     }
 }

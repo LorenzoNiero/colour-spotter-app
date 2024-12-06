@@ -59,10 +59,6 @@ The app follows an implementation of mudularazition by features:
 - *feature/list* : implements the UI for displaying and managing the list of captured colors. It provides functionalities deleting colors, and observing database updates to keep the list synchronized. 
 - *camera* : provides functionalities for accessing and managing the device s camera. It handles camera setup, preview, and image analysis for color quantizzation. It encapsulates the logic for extracting color information from camera frames.
 
-This the graph of dependencies:
-
-TODO
-
 ## Testing
 
 The project includes unit tests for the network, domain, and data modules. 

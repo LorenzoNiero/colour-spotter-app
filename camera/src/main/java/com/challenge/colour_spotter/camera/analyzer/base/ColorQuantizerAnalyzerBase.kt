@@ -1,4 +1,4 @@
-package com.challenge.colour_spotter.camera.analyzer
+package com.challenge.colour_spotter.camera.analyzer.base
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -69,7 +69,6 @@ abstract class ColorQuantizerAnalyzerBase(
         } finally {
             imageProxy.close()
         }
-
     }
 
     /**

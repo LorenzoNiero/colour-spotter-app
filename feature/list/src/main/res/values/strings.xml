@@ -4,4 +4,5 @@
     <string name="error_label">Error:\n%1$s</string>
     <string name="empty_list_message">Empty list</string>
     <string name="delete_button_description">Delete %1$s</string>
+    <string name="list_title">List page</string>
 </resources>

@@ -69,7 +69,7 @@ private fun ListSpotterContent(
     Scaffold(
         topBar = {
             TopBar(
-                title = stringResource(id = R_UI.string.app_name),
+                title = stringResource(id = R.string.list_title),
                 onBackClick = {
                     navController?.popBackStack()
                 }
