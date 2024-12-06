@@ -70,11 +70,7 @@ You can find them in the respective module directories.
 
 ## Screenshots
 
-<img src="screenshot/screen_home.png" alt="Home" width="150">
-<img src="screenshot/screen_list.png" alt="List" width="150">
-
-
-TODO
+<img src="screenshot/previews.jpg" alt="previes" >
 
 ### Todo
 - enable obfuscation code with R8
