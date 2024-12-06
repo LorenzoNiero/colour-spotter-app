@@ -36,8 +36,8 @@ internal class ColorRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun observeAllColor(desc : Boolean): Flow<List<ColorModel>> =
-        colorLocalDataSource.onColorsUpdate(desc).mapLatest { dog ->
-            dog.map { it.asExternalModel() }
+        colorLocalDataSource.onColorsUpdate(desc).mapLatest { color ->
+            color.map { it.asExternalModel() }
         }
 
     override suspend fun deleteColor(color: ColorModel) = colorLocalDataSource.deleteColor(color.id)
