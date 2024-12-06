@@ -11,7 +11,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.jvm.Throws
 
 class GetColourInformationByHexUseCaseTest {
 
@@ -53,3 +52,4 @@ class GetColourInformationByHexUseCaseTest {
         assert(response.isFailure)
     }
 }
+

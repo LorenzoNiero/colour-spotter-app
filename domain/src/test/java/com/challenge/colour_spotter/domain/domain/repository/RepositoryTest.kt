@@ -1,5 +1,6 @@
 package com.challenge.colour_spotter.domain.domain.repository
 
+import com.challenge.colour_spotter.data.datasource.ColorLocalDataSource
 import com.challenge.colour_spotter.domain.mock.DataMock
 import com.challenge.colour_spotter.domain.repository.ColorRepository
 import com.challenge.colour_spotter.domain.repository.ColorRepositoryImpl
@@ -17,13 +18,17 @@ class RepositoryTest {
     @MockK
     private lateinit var networkDataSource: NetworkDataSource
 
+    @MockK
+    private lateinit var colorLocalDataSource: ColorLocalDataSource
+
     private lateinit var repository: ColorRepository
 
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
         repository = ColorRepositoryImpl(
-            networkDataSource
+            networkDataSource,
+            colorLocalDataSource
         )
     }
 
