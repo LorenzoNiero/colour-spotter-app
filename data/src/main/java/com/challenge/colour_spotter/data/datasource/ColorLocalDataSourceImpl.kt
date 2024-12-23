@@ -9,7 +9,7 @@ internal class ColorLocalDataSourceImpl @Inject constructor(
     private val colorDao: ColorDao,
 ): ColorLocalDataSource {
 
-    override fun onColorsUpdate(desc : Boolean): Flow<List<ColorEntity>> = colorDao.observeAllColor()
+    override fun onColorsUpdate(desc : Boolean): Flow<List<ColorEntity>> = colorDao.observeAllColorOrderBy(desc)
 
     override fun insertColor(color: ColorEntity) {
         colorDao.insert(color)

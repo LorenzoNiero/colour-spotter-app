@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -27,7 +28,9 @@ class ListViewModel @Inject constructor(
     private val _isDescUiState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isDescUiState: StateFlow<Boolean> by lazy { _isDescUiState.asStateFlow() }
 
-    val listUiState = observeColorsUseCase(true).map {
+    val listUiState = isDescUiState.flatMapLatest { isDesc ->
+        observeColorsUseCase(isDesc)
+    }.map {
         if (it.isEmpty()) {
             ListUiState.Empty
         } else {
